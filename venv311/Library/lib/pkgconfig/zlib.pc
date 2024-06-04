@@ -1,0 +1,13 @@
+prefix=C:/rkmlproject/venv311/Library
+exec_prefix=C:/rkmlproject/venv311/Library
+libdir=C:/rkmlproject/venv311/Library/lib
+sharedlibdir=C:/rkmlproject/venv311/Library/lib
+includedir=C:/rkmlproject/venv311/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

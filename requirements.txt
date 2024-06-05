@@ -1,4 +1,6 @@
 pandas
 numpy
+sys
 seaborn
+logging
 -e .

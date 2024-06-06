@@ -1,6 +1,7 @@
 pandas
 numpy
-sys
 seaborn
-logging
--e .
+matplotlib
+catboost
+xgboost
+scikit-learn

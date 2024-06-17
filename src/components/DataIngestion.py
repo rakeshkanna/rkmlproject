@@ -30,9 +30,9 @@ class DataIngestion:
             df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
             logging.info(f"Raw Data saved at {self.ingestion_config.raw_data_path}")
             train_set,test_set = train_test_split(df,test_size=0.2, random_state=42)
-            df.to_csv(self.ingestion_config.train_data_path,index=False,header=True)
+            train_set.to_csv(self.ingestion_config.train_data_path,index=False,header=True)
             logging.info(f"Train Data saved at {self.ingestion_config.train_data_path}")
-            df.to_csv(self.ingestion_config.test_data_path,index=False,header=True)
+            test_set.to_csv(self.ingestion_config.test_data_path,index=False,header=True)
             logging.info(f"Test Data saved at {self.ingestion_config.test_data_path}")
             return(
                 self.ingestion_config.train_data_path,
@@ -44,6 +44,6 @@ class DataIngestion:
 if __name__=="__main__":
     obj = DataIngestion()
     train_data,test_data = obj.InitiateDataIngestion_csv('./src/notebooks/data.csv')
-    data_transformer = DataTransformation
-    data_transformer.Initiate_Transform_Data(train_data,test_data)
+    data_transformer = DataTransformation()
+    data_transformer.Initiate_Transform_Data(train_path=train_data,test_path= test_data)
 

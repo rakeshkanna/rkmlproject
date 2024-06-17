@@ -2,7 +2,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
-from sklearn.compose import make_column_transformer
+from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
@@ -28,8 +28,7 @@ class DataTransformation:
             cat_pipeline = Pipeline(
                 steps=[
                     ('imputer',SimpleImputer(strategy='most_frequent')),
-                    ('OneHotEncoder',OneHotEncoder()),
-                    ('StandardScler',StandardScaler())
+                    ('OneHotEncoder',OneHotEncoder())
                 ]
             )
 
@@ -41,9 +40,9 @@ class DataTransformation:
                 ]
             )
             # Join both Pipelines
-            preprocessor= make_column_transformer(
+            preprocessor= ColumnTransformer([
                 ('num_pipeline',num_pipeline,num_colums),
-                ('cat_pipeline',cat_pipeline,cat_columns)
+                ('cat_pipeline',cat_pipeline,cat_columns)]
             )
 
             return preprocessor
@@ -52,36 +51,31 @@ class DataTransformation:
         except Exception as e:
             raise CustomException(e,sys)
     
-    def Initiate_Transform_Data(self,train_path,test_path):
+    def Initiate_Transform_Data(self, train_path, test_path):
         try:
             # read train and test data
             train_df= pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
             target_column= "math_score"
             preprocessor_obj = self.TransformData()
-            input_features_train = train_df.drop(columns=[target_column],axis=1)
-            # Set Target Feature
-            target_feature_train = train_df[target_column]
-            input_features_test = test_df.drop(columns=[target_column],axis=1)
-            target_feature_test = test_df[target_column]
+            input_features_train = train_df.copy()
+            target_features_train = input_features_train.pop(target_column)
+            input_features_test = test_df.copy()
+            target_feature_test = input_features_test.pop(target_column)
 
-            input_feature_train_arr = preprocessor_obj.fit_transform(input_features_train)
-            input_features_test_arr = preprocessor_obj.transform(input_features_train)
+            input_features_train_arr = preprocessor_obj.fit_transform(input_features_train)
+            input_features_test_arr = preprocessor_obj.transform(input_features_test)
 
-            train_arr = np.c_[input_features_test_arr,np.array (target_feature_train)]
+            train_arr = np.c_[input_features_train_arr,np.array (target_features_train)]
 
             test_arr = np.c_[input_features_test_arr,np.array(target_feature_test)]
 
             save_object(
-                filepath = self.data_transformation_config.data_transformation_path,
+                file_path = self.data_transformation_config.data_transformation_path,
                 obj= preprocessor_obj
             )
 
             return (train_arr,test_arr,self.data_transformation_config.data_transformation_path)
         
-
-
-
-
         except Exception as e:
             raise CustomException(e,sys) 
